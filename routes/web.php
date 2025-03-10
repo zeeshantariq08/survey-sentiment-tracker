@@ -21,7 +21,7 @@ Route::post('/logout', [MemberAuthController::class, 'logout'])->name('member.lo
 Route::middleware('auth:member')->group(function () {
     Route::get('/dashboard', [SurveyController::class, 'dashboard'])->name('member.dashboard');
 
-    Route::get('/survey', [SurveyController::class, 'show'])->name('survey.show');
+    Route::get('/survey/{survey}', [SurveyController::class, 'show'])->name('survey.show');
     Route::post('/survey/{survey}', [SurveyController::class, 'store'])->name('survey.store');
 });
 

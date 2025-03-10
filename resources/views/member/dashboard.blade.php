@@ -44,7 +44,7 @@
                     </button>
                 @else
                     <!-- Take Survey Button -->
-                    <a href="{{ route('survey.show', $assignment->survey->id) }}"
+                    <a href="{{ route('survey.show', $assignment->survey?->id) }}"
                        class="block text-center bg-gray-700 text-white py-2 rounded-lg hover:bg-gray-900 transition duration-300">
                         📝 Take Survey
                     </a>

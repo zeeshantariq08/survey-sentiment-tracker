@@ -24,17 +24,15 @@ class SurveyController extends Controller
     }
 
 
-    public function show()
+    public function show(Survey $survey)
     {
-        $survey = Survey::whereHas('questions', function ($query) {
-            $query->whereHas('answerOptions');
-        })
-            ->with(['questions.answerOptions']) // Eager load questions & answer options
-            ->first();
-
-        if (!$survey) {
-            return redirect()->back()->with('error', 'No surveys available.');
+        // Ensure the survey has questions with answer options
+        if (!$survey->questions()->whereHas('answerOptions')->exists()) {
+            return redirect()->back()->with('error', 'This survey does not have valid questions.');
         }
+
+        // Eager load related data
+        $survey->load(['questions.answerOptions']);
 
         return view('survey.show', compact('survey'));
     }
