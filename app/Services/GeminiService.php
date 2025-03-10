@@ -16,14 +16,26 @@ class GeminiService
         $this->endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={$this->apiKey}";
     }
 
-    public function generateQuestions(string $topic): array
+    public function generateQuestions(string $title, string $description): array
     {
         $apiKey = env('GEMINI_API_KEY');
         $endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={$apiKey}";
 
+        // Construct the prompt with both title & description
+        $prompt = "Generate 5 diverse survey questions based on the following details:
+
+    Title: $title
+    Description: $description
+
+    Each question should include:
+    - A 'question_text'
+    - A 'type' ('open-ended', 'multiple-choice', 'scale')
+    - If 'multiple-choice' or 'scale', provide 'answer_options' (at least 3 options).
+    Return a valid JSON array.";
+
         $response = Http::post($endpoint, [
             'contents' => [
-                ['parts' => [['text' => "Generate 5 survey questions about: $topic. Specify the question type ('open-ended', 'multiple-choice', 'scale') and provide answer options if applicable. Return a valid JSON array."]]]
+                ['parts' => [['text' => $prompt]]]
             ]
         ]);
 
@@ -36,7 +48,7 @@ class GeminiService
 
         $content = $data['candidates'][0]['content']['parts'][0]['text'] ?? '';
 
-        // Remove possible code block formatting from response
+        // Remove potential JSON formatting artifacts
         $content = preg_replace('/^```json\s*|\s*```$/', '', trim($content));
 
         // Decode JSON
@@ -49,5 +61,6 @@ class GeminiService
 
         return $questions;
     }
+
 
 }

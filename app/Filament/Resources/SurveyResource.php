@@ -16,6 +16,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\Actions\Action;
 
 class SurveyResource extends Resource
 {
@@ -26,6 +27,8 @@ class SurveyResource extends Resource
 
 
 
+
+
     public static function form(Forms\Form $form): Forms\Form
     {
         return $form
@@ -33,74 +36,101 @@ class SurveyResource extends Resource
                 Forms\Components\TextInput::make('title')
                     ->label('Survey Title')
                     ->required()
-                    ->reactive()
-                    ->afterStateUpdated(function ($state, callable $set, $livewire) {
-                        if (!empty($state) && $livewire instanceof CreateRecord) { // Only generate questions on create
-                            $gemini = new GeminiService();
-                            $questions = $gemini->generateQuestions($state);
-
-                            if (!is_array($questions)) {
-                                throw new \Exception('Invalid response format from Gemini API');
-                            }
-
-                            // Convert options into an array of objects
-                            $formattedQuestions = collect($questions)->map(function ($q) {
-                                return [
-                                    'question_text' => $q['question'] ?? '',
-                                    'type' => $q['type'] ?? 'open-ended',
-                                    'answer_options' => isset($q['answer_options'])
-                                        ? collect($q['answer_options'])->map(fn($option) => ['option' => $option])->toArray()
-                                        : [],
-                                ];
-                            })->toArray();
-
-                            $set('questions', $formattedQuestions);
-                        }
-                    }),
+                    ->reactive(),
 
                 Forms\Components\Textarea::make('description')
                     ->label('Survey Description')
                     ->rows(3),
+
                 Forms\Components\Select::make('members')
                     ->label('Assign to Members')
                     ->multiple()
-                    ->relationship('members', 'name') // Adjust 'name' to the appropriate column
+                    ->relationship('members', 'name')
                     ->preload(),
 
-                Forms\Components\Repeater::make('questions')
-                    ->label('Survey Questions')
+                Forms\Components\Section::make('Generate Survey Questions')
                     ->schema([
-                        Forms\Components\TextInput::make('question_text')
-                            ->label('Question')
-                            ->required(),
+                        Forms\Components\Placeholder::make('generate_button')
+                            ->content('Click the button to generate survey questions.')
+                            ->columnSpanFull(),
 
-                        Forms\Components\Select::make('type')
-                            ->label('Question Type')
-                            ->options([
-                                'open-ended' => 'Open-Ended',
-                                'scale' => 'Scale (1-10)',
-                                'multiple-choice' => 'Multiple Choice',
-                            ])
-                            ->reactive()
-                            ->required(),
+                        Forms\Components\Actions::make([
+                            Action::make('generateQuestions')
+                                ->label('Generate Questions')
+                                ->color('primary')
+                                ->icon('heroicon-o-light-bulb')
+                                ->action(fn (callable $set, callable $get) => self::fetchQuestions($set, $get)),
+                        ]),
 
-                        Forms\Components\Repeater::make('answer_options')
-                            ->label('Answer Options')
+                        Forms\Components\Repeater::make('questions')
+                            ->label('Survey Questions')
                             ->schema([
-                                Forms\Components\TextInput::make('option')
-                                    ->label('Option')
+                                Forms\Components\TextInput::make('question_text')
+                                    ->label('Question')
                                     ->required(),
+
+                                Forms\Components\Select::make('type')
+                                    ->label('Question Type')
+                                    ->options([
+                                        'open-ended' => 'Open-Ended',
+                                        'scale' => 'Scale (1-10)',
+                                        'multiple-choice' => 'Multiple Choice',
+                                    ])
+                                    ->reactive()
+                                    ->required(),
+
+                                Forms\Components\Repeater::make('answer_options')
+                                    ->label('Answer Options')
+                                    ->schema([
+                                        Forms\Components\TextInput::make('option')
+                                            ->label('Option')
+                                            ->required(),
+                                    ])
+                                    ->columns(1)
+                                    ->visible(fn ($get) => in_array($get('type'), ['multiple-choice', 'scale']))
+                                    ->default([]),
                             ])
                             ->columns(1)
-                            ->visible(fn ($get) => in_array($get('type'), ['multiple-choice', 'scale']))
-                            ->default([]),
-                    ])
-                    ->hiddenOn(['edit'])
-                    ->columns(1)
-                    ->default([])
-                    ->required(),
+                            ->default([])
+                            ->hidden(fn ($get) => empty($get('questions'))), // Hide questions until generated
+                    ]),
             ]);
     }
+
+    /**
+     * Fetch questions from Gemini API
+     */
+    protected static function fetchQuestions(callable $set, callable $get)
+    {
+        $title = $get('title');
+        $description = $get('description');
+
+        if (empty($title) || empty($description)) {
+            return;
+        }
+
+        $gemini = new GeminiService();
+        $questions = $gemini->generateQuestions($title, $description);
+
+        if (!is_array($questions)) {
+            throw new \Exception('Invalid response format from Gemini API');
+        }
+
+        // Format the questions properly
+        $formattedQuestions = collect($questions)->map(function ($q) {
+            return [
+                'question_text' => $q['question_text'] ?? '',
+                'type' => $q['type'] ?? 'open-ended',
+                'answer_options' => isset($q['answer_options'])
+                    ? collect($q['answer_options'])->map(fn($option) => ['option' => $option])->toArray()
+                    : [],
+            ];
+        })->toArray();
+
+
+        $set('questions', $formattedQuestions);
+    }
+
 
     public static function table(Table $table): Table
     {
