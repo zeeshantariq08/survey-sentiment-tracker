@@ -10,6 +10,7 @@ use App\Models\SurveyAssignment;
 use App\Services\GeminiService;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -34,7 +35,7 @@ class SurveyResource extends Resource
                     ->required()
                     ->reactive()
                     ->afterStateUpdated(function ($state, callable $set, $livewire) {
-                        if (!empty($state) && $livewire->isCreating()) { // Only generate questions on create
+                        if (!empty($state) && $livewire instanceof CreateRecord) { // Only generate questions on create
                             $gemini = new GeminiService();
                             $questions = $gemini->generateQuestions($state);
 
