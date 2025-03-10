@@ -116,7 +116,6 @@ class SurveyResource extends Resource
             throw new \Exception('Invalid response format from Gemini API');
         }
 
-        // Format the questions properly
         $formattedQuestions = collect($questions)->map(function ($q) {
             return [
                 'question_text' => $q['question_text'] ?? '',

@@ -14,10 +14,9 @@ class SurveyController extends Controller
 
     public function dashboard()
     {
-        $member = auth()->user(); // Get the logged-in member
+        $member = auth()->user();
 
-        // Fetch assigned surveys with their status using Eloquent
-        $surveys = SurveyAssignment::with('survey') // Load related survey details
+        $surveys = SurveyAssignment::with('survey')
         ->where('member_id', $member->id)
             ->get();
 
@@ -36,8 +35,7 @@ class SurveyController extends Controller
         if (!$survey) {
             return redirect()->back()->with('error', 'No surveys available.');
         }
-//        dd($survey->toArray());
-//
+
         return view('survey.show', compact('survey'));
     }
 

@@ -29,7 +29,6 @@ class SentimentAnalysisService
 
         $data = $response->json();
 
-        // Extract sentiment from response
         return $data['candidates'][0]['content']['parts'][0]['text'] ?? 'neutral';
     }
 }

@@ -48,10 +48,8 @@ class GeminiService
 
         $content = $data['candidates'][0]['content']['parts'][0]['text'] ?? '';
 
-        // Remove potential JSON formatting artifacts
         $content = preg_replace('/^```json\s*|\s*```$/', '', trim($content));
 
-        // Decode JSON
         $questions = json_decode($content, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
