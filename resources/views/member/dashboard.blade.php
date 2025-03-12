@@ -28,6 +28,10 @@
         <input id="search" type="text" placeholder="🔍 Search surveys..."
                class="px-4 py-2 w-1/2 border border-gray-400 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-700">
     </div>
+    @if(session('success'))
+        <div class="bg-green-500 text-white p-3 mb-4 rounded">{{ session('success') }}</div>
+    @endif
+
 
     <!-- Surveys Grid -->
     <div id="surveyContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
