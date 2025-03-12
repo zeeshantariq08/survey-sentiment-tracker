@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\SurveyResponse;
 use App\Services\SentimentAnalysisService;
+use Illuminate\Console\Command;
 
 class ProcessSurveySentiment extends Command
 {
