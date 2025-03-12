@@ -2,8 +2,8 @@
 
 namespace App\Filament\Widgets;
 
-use Filament\Widgets\ChartWidget;
 use App\Models\SurveyResponse;
+use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Carbon;
 
 class SentimentTrendChart extends ChartWidget
@@ -34,16 +34,19 @@ class SentimentTrendChart extends ChartWidget
                     'label' => 'Positive',
                     'data' => $positiveData,
                     'backgroundColor' => '#22c55e',
+                    'borderColor' => '#16a34a',
                 ],
                 [
                     'label' => 'Neutral',
                     'data' => $neutralData,
                     'backgroundColor' => '#facc15',
+                    'borderColor' => '#f59e0b',
                 ],
                 [
                     'label' => 'Negative',
                     'data' => $negativeData,
                     'backgroundColor' => '#ef4444',
+                    'borderColor' => '#dc2626',
                 ],
             ],
             'labels' => $dates,
