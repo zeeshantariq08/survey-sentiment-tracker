@@ -28,10 +28,10 @@ class SentimentAnalysisService
                     'parts' => [
                         ['text' => "Analyze the sentiment of this survey response: '{$answer}'.
 
-                    - If the response is a number (1-10), classify as:
-                      • 1-3 → 'negative'
-                      • 4-6 → 'neutral'
-                      • 7-10 → 'positive'
+                    - If the response is a number (1-5), classify as:
+                      • 1-2 → 'negative'
+                      • 3 → 'neutral'
+                      • 4-5 → 'positive'
 
                     - If the response is a multiple-choice answer, classify sentiment accordingly.
                     - If the response is open-ended, interpret sentiment naturally.
