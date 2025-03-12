@@ -4,7 +4,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 
-class SentimentAnalysisService
+class SentimentAnalysisGeminiService
 {
     protected string $apiKey;
     protected string $endpoint;
@@ -20,7 +20,6 @@ class SentimentAnalysisService
 
         $decoded = json_decode($text, true);
         $answer = $decoded['answer'] ?? $text;
-
         $response = Http::post($this->endpoint, [
             'contents' => [
                 [
