@@ -19,7 +19,7 @@ class SurveyResponse extends Model
 
     public function question()
     {
-        return $this->belongsTo(Question::class);
+        return $this->belongsTo(SurveyQuestion::class);
     }
 
     public static function boot()
