@@ -26,7 +26,7 @@ class ProcessSurveySentiment extends Command
             $query->where('id', $responseId);
         }
 
-        $responses = $query->get();
+        $responses = $query->whereNull('sentiment')->get();
 
         if ($responses->isEmpty()) {
             $this->info('No survey responses found that need sentiment analysis.');
@@ -37,9 +37,13 @@ class ProcessSurveySentiment extends Command
 
         foreach ($responses as $response) {
             $sentiment = $sentimentService->analyze($response->answer);
+            if(!$sentiment) {
+                $this->error("Failed to analyze sentiment for response ID {$response->id}. Text: {$response->answer}");
+                continue;
+            }
             $response->update(['sentiment' => $sentiment]);
 
-            $this->info("Updated response ID {$response->id} with sentiment: {$sentiment}");
+            $this->info("Updated response ID {$response->id}. Text {$response->answer} => with sentiment: {$sentiment}");
         }
 
         $this->info("Sentiment processing completed!");

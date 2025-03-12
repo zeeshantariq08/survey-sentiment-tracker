@@ -15,7 +15,7 @@ class SentimentScoreChart extends ChartWidget
         $dates = [];
         $scores = [];
 
-        for ($i = 6; $i >= 0; $i--) {
+        for ($i = 30; $i >= 0; $i--) {
             $date = Carbon::now()->subDays($i)->toDateString();
             $dates[] = $date;
 

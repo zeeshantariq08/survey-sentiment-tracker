@@ -11,7 +11,7 @@ class SentimentAnalysisService
 
     public function __construct()
     {
-        $this->apiKey = env('GEMINI_API_KEY');
+        $this->apiKey = config('services.gemini.api_key');
         $this->endpoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={$this->apiKey}";
     }
 
@@ -44,7 +44,7 @@ class SentimentAnalysisService
 
         $data = $response->json();
 
-        return trim($data['candidates'][0]['content']['parts'][0]['text'] ?? 'neutral');
+        return trim($data['candidates'][0]['content']['parts'][0]['text'] ?? null);
     }
 
 
