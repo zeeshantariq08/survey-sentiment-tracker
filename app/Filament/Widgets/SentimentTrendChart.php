@@ -19,7 +19,7 @@ class SentimentTrendChart extends ChartWidget
         $negativeData = [];
 
         // Last 7 days sentiment analysis
-        for ($i = 6; $i >= 0; $i--) {
+        for ($i = 30; $i >= 0; $i--) {
             $date = Carbon::now()->subDays($i)->toDateString();
             $dates[] = $date;
 

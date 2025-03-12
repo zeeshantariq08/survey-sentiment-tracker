@@ -10,7 +10,7 @@ class SurveyResponse extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['survey_id', 'question_id', 'answer', 'sentiment'];
+    protected $guarded = [];
 
     public function survey()
     {
