@@ -2,13 +2,14 @@
 
 namespace App\Filament\Widgets;
 
-use Filament\Widgets\ChartWidget;
 use App\Models\SurveyResponse;
+use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Carbon;
 
 class SentimentScoreChart extends ChartWidget
 {
     protected static ?string $heading = 'Sentiment Score Changes';
+    protected static ?int $sort = 11;
 
     protected function getData(): array
     {
