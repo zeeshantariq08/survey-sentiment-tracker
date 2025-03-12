@@ -4,12 +4,13 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Survey;
-use Filament\Widgets\ChartWidget;
 use App\Models\SurveyResponse;
+use Filament\Widgets\ChartWidget;
 
 class SentimentCategoryChart extends ChartWidget
 {
     protected static ?string $heading = 'Sentiment Category Analysis';
+    protected static ?int $sort = 10;
 
     protected function getData(): array
     {

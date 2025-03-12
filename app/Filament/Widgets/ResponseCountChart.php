@@ -5,10 +5,12 @@ namespace App\Filament\Widgets;
 use App\Models\SurveyResponse;
 use Filament\Widgets\ChartWidget;
 
-class SentimentDistributionChart extends ChartWidget
+class ResponseCountChart extends ChartWidget
 {
-    protected static ?string $heading = 'Sentiment Distribution';
-    protected static ?int $sort = 4;
+    protected static ?string $heading = 'Response Count by Sentiment';
+    protected static string $type = 'bar';
+    protected static ?int $sort = 1;
+
 
     protected function getData(): array
     {
@@ -20,17 +22,19 @@ class SentimentDistributionChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Sentiments',
                     'data' => array_values($sentimentCounts),
-                    'backgroundColor' => ['#22c55e', '#facc15', '#ef4444'], // ✅ Moved inside dataset
-                ],
+                    'backgroundColor' => ['#22c55e', '#facc15', '#ef4444'],
+                    'borderColor' => ['#16a34a', '#d97706', '#d11f1f'],
+
+                ]
             ],
-            'labels' => ['Positive', 'Neutral', 'Negative'],
+
+            'labels' => array_keys($sentimentCounts),
         ];
     }
 
     protected function getType(): string
     {
-        return 'pie'; // ✅ Ensure it's a valid chart type
+        return self::$type;
     }
 }
