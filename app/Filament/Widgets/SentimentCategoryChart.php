@@ -14,24 +14,27 @@ class SentimentCategoryChart extends ChartWidget
 
     protected function getData(): array
     {
-        $surveys = Survey::pluck('title'); // Fetch dynamic survey titles
+        $surveys = Survey::pluck('title')->toArray(); // Fetch survey titles once
 
+        // Fetch all counts in a single query using GROUP BY
+        $surveyResponses = SurveyResponse::selectRaw('surveys.title, sentiment, COUNT(*) as count')
+            ->join('surveys', 'surveys.id', '=', 'survey_responses.survey_id')
+            ->whereIn('surveys.title', $surveys)
+            ->groupBy('surveys.title', 'sentiment')
+            ->get()
+            ->groupBy('title');
+
+        // Initialize dataset arrays
         $positive = [];
         $negative = [];
         $neutral = [];
 
+        // Loop through surveys and extract sentiment counts efficiently
         foreach ($surveys as $surveyTitle) {
-            $positive[] = SurveyResponse::whereHas('survey', function ($query) use ($surveyTitle) {
-                $query->where('title', $surveyTitle);
-            })->where('sentiment', 'positive')->count();
-
-            $negative[] = SurveyResponse::whereHas('survey', function ($query) use ($surveyTitle) {
-                $query->where('title', $surveyTitle);
-            })->where('sentiment', 'negative')->count();
-
-            $neutral[] = SurveyResponse::whereHas('survey', function ($query) use ($surveyTitle) {
-                $query->where('title', $surveyTitle);
-            })->where('sentiment', 'neutral')->count();
+            $responses = $surveyResponses[$surveyTitle] ?? collect();
+            $positive[] = $responses->firstWhere('sentiment', 'positive')?->count ?? 0;
+            $negative[] = $responses->firstWhere('sentiment', 'negative')?->count ?? 0;
+            $neutral[] = $responses->firstWhere('sentiment', 'neutral')?->count ?? 0;
         }
 
         return [
@@ -40,7 +43,7 @@ class SentimentCategoryChart extends ChartWidget
                 ['label' => 'Negative', 'data' => $negative, 'backgroundColor' => '#ef4444'], // Red
                 ['label' => 'Neutral', 'data' => $neutral, 'backgroundColor' => '#facc15'], // Yellow
             ],
-            'labels' => $surveys->toArray(), // Survey titles as labels
+            'labels' => $surveys, // Survey titles as labels
         ];
     }
 

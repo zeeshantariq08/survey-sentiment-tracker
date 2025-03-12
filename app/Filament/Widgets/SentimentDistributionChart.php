@@ -22,7 +22,8 @@ class SentimentDistributionChart extends ChartWidget
                 [
                     'label' => 'Sentiments',
                     'data' => array_values($sentimentCounts),
-                    'backgroundColor' => ['#22c55e', '#facc15', '#ef4444'], // ✅ Moved inside dataset
+                    'backgroundColor' => ['#22c55e', '#facc15', '#ef4444'],
+                    'borderColor' => ['#22c55e', '#facc15', '#ef4444']
                 ],
             ],
             'labels' => ['Positive', 'Neutral', 'Negative'],
