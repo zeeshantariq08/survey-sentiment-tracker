@@ -3,19 +3,36 @@
 namespace App\Console\Commands;
 
 use App\Models\SurveyResponse;
-use App\Services\SentimentAnalysisService;
+use App\Services\SentimentAnalysisGeminiService;
+use App\Services\SentimentAnalysisOpenAIService;
 use Illuminate\Console\Command;
 
 class ProcessSurveySentiment extends Command
 {
-    protected $signature = 'survey:process-sentiment {response_id?}';
+    protected $signature = 'survey:process-sentiment {engine} {response_id?}';
     protected $description = 'Process sentiment analysis for survey responses';
 
     /**
      * Execute the console command.
      */
-    public function handle(SentimentAnalysisService $sentimentService)
+    public function handle()
     {
+        //check the engine
+        $engine = $this->argument('engine');
+        if ($engine !== 'gemini' and $engine !== 'openai') {
+            $this->error('Invalid sentiment analysis engine. Supported engines: gemini');
+            return;
+        }
+        switch ($engine) {
+            case 'openai':
+                $sentimentService = new SentimentAnalysisOpenAIService();
+                break;
+            case 'gemini':
+            default:
+                $sentimentService = new SentimentAnalysisGeminiService();
+                break;
+        }
+
         // Get the optional response_id argument
         $responseId = $this->argument('response_id');
 
@@ -33,11 +50,11 @@ class ProcessSurveySentiment extends Command
             return;
         }
 
-        $this->info("Processing " . $responses->count() . " responses...");
+        $this->info("Processing ".$responses->count()." responses...");
 
         foreach ($responses as $response) {
             $sentiment = $sentimentService->analyze($response->answer);
-            if(!$sentiment) {
+            if (!$sentiment) {
                 $this->error("Failed to analyze sentiment for response ID {$response->id}. Text: {$response->answer}");
                 continue;
             }

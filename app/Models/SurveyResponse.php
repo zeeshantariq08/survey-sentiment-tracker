@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Services\SentimentAnalysisService;
+use App\Services\SentimentAnalysisGeminiService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -27,7 +27,7 @@ class SurveyResponse extends Model
         parent::boot();
 
         static::creating(function ($response) {
-            $sentimentService = new SentimentAnalysisService();
+            $sentimentService = new SentimentAnalysisGeminiService();
             $response->sentiment = $sentimentService->analyze($response);
         });
     }
