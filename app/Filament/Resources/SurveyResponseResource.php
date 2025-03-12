@@ -5,13 +5,9 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\SurveyResponseResource\Pages;
 use App\Filament\Resources\SurveyResponseResource\RelationManagers;
 use App\Models\SurveyResponse;
-use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SurveyResponseResource extends Resource
 {
@@ -29,9 +25,10 @@ class SurveyResponseResource extends Resource
                 Tables\Columns\TextColumn::make('survey.title')
                     ->label('Survey Title')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(),
 
-                Tables\Columns\TextColumn::make('question.title')
+                Tables\Columns\TextColumn::make('question.question')
                     ->label('Question')
                     ->sortable()
                     ->searchable(),
@@ -52,8 +49,6 @@ class SurveyResponseResource extends Resource
                         default => 'gray',       // Default color
                     })
                     ->sortable(),
-
-
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('survey_id')
