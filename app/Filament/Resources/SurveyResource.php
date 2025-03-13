@@ -14,6 +14,7 @@ use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Google\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\Actions\Action;
@@ -40,7 +41,8 @@ class SurveyResource extends Resource
 
                 Forms\Components\Textarea::make('description')
                     ->label('Survey Description')
-                    ->rows(3),
+                    ->rows(3)
+                    ->required(),
 
                 Forms\Components\Select::make('members')
                     ->label('Assign to Members')
@@ -93,7 +95,14 @@ class SurveyResource extends Resource
                             ->columns(1)
                             ->default([])
                             ->hidden(fn ($get) => empty($get('questions'))), // Hide questions until generated
-                    ]),
+                    ])->hidden(function (?\Illuminate\Database\Eloquent\Model $record) {
+                        if ($record?->questions->count() == 0) {
+                            return false;
+                        }
+                        return true;
+
+
+                    })
             ]);
     }
 
