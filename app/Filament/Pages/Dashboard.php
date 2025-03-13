@@ -3,10 +3,11 @@
 namespace App\Filament\Pages;
 
 
-use App\Filament\Widgets\SentimentCategoryChart;
+use App\Filament\Widgets\SentimentStackedBarChart;
 use App\Filament\Widgets\SentimentScoreChart;
 use App\Filament\Widgets\SentimentTrendChart;
 use App\Filament\Widgets\SentimentDistributionChart;
+use App\Filament\Widgets\SurveyFilterWidget;
 use Filament\Pages\Dashboard as BasePage;
 
 class Dashboard extends BasePage
@@ -18,13 +19,14 @@ class Dashboard extends BasePage
         return 6;
     }
 
-    public function getWidgets(): array
+    public function getHeaderWidgets(): array
     {
         return [
+            SurveyFilterWidget::class,
             SentimentDistributionChart::class,
-            SentimentTrendChart::class,
             SentimentScoreChart::class,
-            SentimentCategoryChart::class,
+            SentimentStackedBarChart::class,
+            SentimentBubbleChart::class,
         ];
     }
 

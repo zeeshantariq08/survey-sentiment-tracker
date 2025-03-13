@@ -9,7 +9,8 @@ use Illuminate\Support\Carbon;
 class SentimentScoreChart extends ChartWidget
 {
     protected static ?string $heading = 'Sentiment Score Changes';
-    protected static ?int $sort = 11;
+    protected static ?int $sort = 3;
+    public ?array $filters = [];
 
     protected function getData(): array
     {
@@ -20,11 +21,18 @@ class SentimentScoreChart extends ChartWidget
             $date = Carbon::now()->subDays($i)->toDateString();
             $dates[] = $date;
 
-            $score = SurveyResponse::whereDate('created_at', $date)
-                ->selectRaw('SUM(CASE WHEN sentiment = "positive" THEN 1 WHEN sentiment = "negative" THEN -1 ELSE 0 END) as score')
-                ->value('score') ?? 0;
+            $query = SurveyResponse::whereDate('created_at', $date)
+                ->selectRaw('SUM(CASE WHEN sentiment = "positive" THEN 1 WHEN sentiment = "negative" THEN -1 ELSE 0 END) as score');
 
-            $scores[] = $score;
+            if (!empty($this->filters['surveyId'])) {
+                $query->where('survey_id', $this->filters['surveyId']);
+            }
+
+            if (!empty($this->filters['sentiment'])) {
+                $query->where('sentiment', $this->filters['sentiment']);
+            }
+
+            $scores[] = $query->value('score') ?? 0;
         }
 
         return [
@@ -43,5 +51,18 @@ class SentimentScoreChart extends ChartWidget
     protected function getType(): string
     {
         return 'line';
+    }
+
+    protected function getListeners(): array
+    {
+        return [
+            'updateSurveyFilters' => 'updateFilters',
+        ];
+    }
+
+    public function updateFilters(array $filters)
+    {
+        $this->filters = array_merge($this->filters, $filters);
+        $this->updateChartData();
     }
 }

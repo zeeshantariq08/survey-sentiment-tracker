@@ -11,6 +11,7 @@ class WordCloudWidget extends Widget
     protected static ?string $heading = 'Word Cloud (Top Words in Responses)';
     protected static string $view = 'filament.widgets.word-cloud-widget';
     protected static ?int $sort = 4;
+    protected static bool $isDiscovered = false;
 
     public static function canSpanColumns(): bool
     {

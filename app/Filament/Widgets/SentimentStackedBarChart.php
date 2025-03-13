@@ -2,13 +2,13 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\Survey;
 use App\Models\SurveyResponse;
 use Filament\Widgets\ChartWidget;
 
-class ResponseCountChart extends ChartWidget
+class SentimentStackedBarChart extends ChartWidget
 {
-    protected static ?string $heading = 'Response Count by Sentiment';
-    protected static string $type = 'bar';
+    protected static ?string $heading = 'Sentiment Distribution by Survey';
     protected static ?int $sort = 2;
 
     public ?array $filters = [];
@@ -19,16 +19,16 @@ class ResponseCountChart extends ChartWidget
             ->join('surveys', 'surveys.id', '=', 'survey_responses.survey_id')
             ->groupBy('surveys.title', 'sentiment');
 
-        if (!empty($this->filters['sentiment'])) {
-            $query->where('survey_responses.sentiment', $this->filters['sentiment']);
-        }
-
         if (!empty($this->filters['surveyId'])) {
             $query->where('surveys.id', $this->filters['surveyId']);
         }
 
+        if (!empty($this->filters['sentiment'])) {
+            $query->where('sentiment', $this->filters['sentiment']);
+        }
+
         $surveyResponses = $query->get()->groupBy('title');
-        $surveys = $surveyResponses->keys()->toArray();
+        $surveys = Survey::pluck('title')->toArray(); // Fetch all survey titles
 
         $positive = [];
         $negative = [];
@@ -43,17 +43,42 @@ class ResponseCountChart extends ChartWidget
 
         return [
             'datasets' => [
-                ['label' => 'Positive', 'data' => $positive, 'backgroundColor' => '#22c55e', 'borderColor' => '#22c55e'],
-                ['label' => 'Negative', 'data' => $negative, 'backgroundColor' => '#ef4444', 'borderColor' => '#ef4444'],
-                ['label' => 'Neutral', 'data' => $neutral, 'backgroundColor' => '#facc15', 'borderColor' => '#facc15'],
+                [
+                    'label' => 'Positive',
+                    'data' => $positive,
+                    'backgroundColor' => '#22c55e',
+                    'stack' => 'sentiments'
+                ],
+                [
+                    'label' => 'Neutral',
+                    'data' => $neutral,
+                    'backgroundColor' => '#facc15',
+                    'stack' => 'sentiments'
+                ],
+                [
+                    'label' => 'Negative',
+                    'data' => $negative,
+                    'backgroundColor' => '#ef4444',
+                    'stack' => 'sentiments'
+                ],
             ],
-            'labels' => $surveys,
+            'labels' => $surveys, // Survey titles as labels
         ];
     }
 
     protected function getType(): string
     {
-        return self::$type;
+        return 'bar';
+    }
+
+    protected function getOptions(): array
+    {
+        return [
+            'scales' => [
+                'x' => ['stacked' => true],
+                'y' => ['stacked' => true],
+            ],
+        ];
     }
 
     protected function getListeners(): array
