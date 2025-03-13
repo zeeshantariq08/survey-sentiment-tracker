@@ -6,12 +6,13 @@ A **Laravel-based** survey sentiment analysis system using **FilamentPHP** and *
 
 ## 🎯 Features
 
-✅ **Survey Management**: Create and assign surveys effortlessly.\
-✅ **Sentiment Analysis**: Analyze responses using **Gemini AI**.\
-✅ **AI-Powered Question Generation**: Generate relevant questions and answer options dynamically.\
-✅ **Interactive Question Generation**: Click the **"Generate Questions"** button to fetch AI-powered questions instead of auto-generation.\
-✅ **FilamentPHP Dashboard**: Visualize sentiment trends with interactive charts.\
-✅ **Survey Filtering**: Filter dashboard insights based on selected surveys.
+- ✅ **Survey Management**: Create, assign, and manage surveys effortlessly.
+- ✅ **Sentiment Analysis**: Analyze responses using **Gemini AI** for deeper insights.
+- ✅ **AI-Powered Question Generation**: Dynamically generate relevant questions and answer options.
+- ✅ **Interactive Question Generation**: Click the **"Generate Questions"** button for AI-powered suggestions.
+- ✅ **FilamentPHP Dashboard**: Gain insights with interactive charts and real-time data.
+- ✅ **Survey Filtering**: Apply filters to analyze sentiment trends for specific surveys.
+- ✅ **Sentiment-Based Charts**: Visualize sentiment trends via **bar, stacked bar, line, pie, radar, and polar area charts**.
 
 ---
 
@@ -38,7 +39,7 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-Update `.env` with your database credentials and **Google Gemini API key**:
+Update `.env` with your **database credentials** and **Google Gemini API key**:
 
 ```ini
 GEMINI_API_KEY=your_api_key_here
@@ -60,10 +61,12 @@ php artisan serve
 
 ## 📊 Dashboard Insights
 
-🔵 **Pie Chart** → Sentiment Distribution\
-🟠 **Bar Chart** → Sentiment Trend Over Time\
-🟢 **Line Chart** → Sentiment Score Changes\
-🔺 **Radar Chart** → Sentiment Category Analysis
+- 🔵 **Pie Chart**: Sentiment Distribution across responses.
+- 🟠 **Bar Chart**: Sentiment Count by Survey.
+- 🟢 **Stacked Bar Chart**: Sentiment Breakdown by Category.
+- 🔴 **Polar Area Chart**: Comparative Sentiment Proportions.
+- 🟣 **Line Chart**: Sentiment Score Changes over time.
+- 🔺 **Radar Chart**: Comparative Sentiment Analysis.
 
 ---
 
@@ -71,30 +74,32 @@ php artisan serve
 
 ### 📝 Creating a Survey
 
-1️⃣ **Navigate** to the survey creation page.\
-2️⃣ **Enter Details**: Fill in the survey **Title** and **Description**.\
-3️⃣ **Assign Members**: Select members to receive the survey.\
-4️⃣ **Generate AI-Based Questions**: Click the **"Generate Questions"** button to fetch AI-powered questions.\
-5️⃣ **Review & Edit**: Modify questions and answer options as needed.\
-6️⃣ **Save & Publish**: Finalize and distribute your survey.
+1. **Navigate** to the survey creation page in the admin panel.
+2. **Enter Details**: Provide a **Title** and **Description** for the survey.
+3. **Assign Members**: Select members who will receive the survey.
+4. **Generate AI-Based Questions**: Click the **"Generate Questions"** button to auto-generate questions.
+5. **Review & Edit**: Modify questions and answer options as needed.
+6. **Save & Publish**: Finalize and distribute the survey.
 
 ---
 
 ## 🤖 API Integration (Gemini AI)
 
-🔹 **Add the API key in ".env"**:
+- **Set up the API key in `.env`**:
 
 ```ini
 GEMINI_API_KEY=your_actual_api_key_here
 ```
 
-🔹 **Fetch API key in Laravel**:
+- **Fetch the API key in Laravel**:
 
 ```php
 $apiKey = env('GEMINI_API_KEY');
 ```
 
-🤝 Contributing
+---
+
+## 🤝 Contributing
 
 We welcome contributions! Feel free to submit **issues** or **pull requests**.
 
@@ -107,4 +112,3 @@ This project is **open-source** and available under the **MIT License**.
 ---
 
 🚀 Happy Surveying! 🎉
-
