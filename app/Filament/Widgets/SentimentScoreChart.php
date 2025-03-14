@@ -11,6 +11,7 @@ class SentimentScoreChart extends ChartWidget
     protected static ?string $heading = 'Sentiment Score Changes';
     protected static ?int $sort = 3;
     public ?array $filters = [];
+    protected static bool $isDiscovered = false;
 
     protected function getData(): array
     {

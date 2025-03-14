@@ -24,7 +24,7 @@ class WordCloudWidget extends Widget
             ->filter(fn($word) => strlen($word) > 3)
             ->countBy()
             ->sortDesc()
-            ->take(20);
+            ->take(10);
 
         return ['words' => $words];
     }
