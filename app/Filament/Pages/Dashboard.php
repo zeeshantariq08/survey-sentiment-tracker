@@ -15,7 +15,7 @@ class Dashboard extends BasePage
         return 6;
     }
 
-    public function getWidgets(): array
+    public function getHeaderWidgets(): array
     {
 
     }
